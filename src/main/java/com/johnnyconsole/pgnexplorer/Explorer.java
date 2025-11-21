@@ -1,9 +1,12 @@
+package com.johnnyconsole.pgnexplorer;
+
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
@@ -14,18 +17,22 @@ import javafx.stage.Stage;
 
 import static javafx.scene.text.FontWeight.BOLD;
 import static javafx.scene.text.FontPosture.REGULAR;
+import static com.johnnyconsole.pgnexplorer.PieceImage.*;
 
 public class Explorer extends Application {
 
     private static final StackPane[][] squares = new StackPane[8][8];
     private static final Color SQUARE_LIGHT = Color.WHITE,
                         SQUARE_DARK = Color.GREEN;
-    private static final double SQUARE_SIZE = 100;
+    public static final double SQUARE_SIZE = 100;
 
     @Override
     public void start(Stage ps) {
-        GridPane board = new GridPane();
-        board.setPadding(new Insets(20, 20, 0, 0));
+        GridPane root = new GridPane(), board = new GridPane();
+        root.setPadding(new Insets(20, 20, 0, 0));
+        root.setHgap(10);
+        root.setVgap(10);
+
         //Create the square nodes
         for(int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
@@ -41,7 +48,7 @@ public class Explorer extends Application {
                 square.setMinWidth(SQUARE_SIZE);
                 square.setMinHeight(SQUARE_SIZE);
                 squares[i - 1][j - 1] = square;
-                board.add(square, i, j);
+                board.add(square, j, i);
             }
         }
 
@@ -63,8 +70,37 @@ public class Explorer extends Application {
             board.add(file, i, 9);
         }
 
+        //Add pieces
+        for (int i = 1; i <= 8; i++) {
+            squares[6][i - 1].getChildren().add(new ImageView(WP));
+            squares[1][i - 1].getChildren().add(new ImageView(BP));
+        }
+
+        squares[0][0].getChildren().add(new ImageView(BR));
+        squares[0][7].getChildren().add(new ImageView(BR));
+        squares[7][0].getChildren().add(new ImageView(WR));
+        squares[7][7].getChildren().add(new ImageView(WR));
+
+        squares[0][1].getChildren().add(new ImageView(BN));
+        squares[0][6].getChildren().add(new ImageView(BN));
+        squares[7][1].getChildren().add(new ImageView(WN));
+        squares[7][6].getChildren().add(new ImageView(WN));
+
+        squares[0][2].getChildren().add(new ImageView(BB));
+        squares[0][5].getChildren().add(new ImageView(BB));
+        squares[7][2].getChildren().add(new ImageView(WB));
+        squares[7][5].getChildren().add(new ImageView(WB));
+
+        squares[0][3].getChildren().add(new ImageView(BQ));
+        squares[7][3].getChildren().add(new ImageView(WQ));
+
+        squares[0][4].getChildren().add(new ImageView(BK));
+        squares[7][4].getChildren().add(new ImageView(WK));
+
+        root.add(board, 0, 0, 9, 9);
+
         ps.setTitle("PGN Explorer");
-        ps.setScene(new Scene(board));
+        ps.setScene(new Scene(root));
         ps.show();
     }
 

@@ -17,7 +17,7 @@ import static javafx.scene.text.FontPosture.REGULAR;
 
 public class Explorer extends Application {
 
-    StackPane[][] squares = new StackPane[8][8];
+    private static final StackPane[][] squares = new StackPane[8][8];
     private static final Color SQUARE_LIGHT = Color.WHITE,
                         SQUARE_DARK = Color.GREEN;
     private static final double SQUARE_SIZE = 100;

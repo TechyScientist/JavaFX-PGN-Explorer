@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PGN Explorer">
+    <output-path>$PROJECT_DIR$/out/artifacts/PGN_Explorer</output-path>
+    <root id="archive" name="JavaFX-PGN-Explorer.jar">
+      <element id="module-output" name="JavaFX-PGN-Explorer" />
+      <element id="dir-copy" path="$PROJECT_DIR$/target/classes/img" />
+    </root>
+  </artifact>
+</component>

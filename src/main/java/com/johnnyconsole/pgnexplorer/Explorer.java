@@ -110,6 +110,14 @@ public class Explorer extends Application {
         exit.setMaxWidth(Double.MAX_VALUE);
         exit.setPrefHeight(BUTTON_HEIGHT);
 
+        prevPly.setDisable(true);
+        nextPly.setDisable(true);
+        prevMove.setDisable(true);
+        nextMove.setDisable(true);
+        start.setDisable(true);
+        end.setDisable(true);
+        reset.setDisable(true);
+
         reset.setOnAction(e -> resetBoard());
         exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
 

@@ -352,7 +352,6 @@ public class Explorer extends Application {
         }
         //TODO: Add sounds depending on the move played
         positionFen.setText(fen);
-        System.out.println(fen);    //Temporary! TODO: Remove when FEN is processed on display board
     }
     @SuppressWarnings("unused")
     public static void main(String[] args) {

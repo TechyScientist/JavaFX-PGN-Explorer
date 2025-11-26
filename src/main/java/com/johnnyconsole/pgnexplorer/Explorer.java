@@ -35,10 +35,8 @@ public class Explorer extends Application {
                                 BUTTON_HEIGHT = 50;
     private static final Button openPGN = new Button("Import PGN"),
             nextPly = new Button("Next Ply"),
-            nextMove = new Button("Next Move"),
             end = new Button("End"),
             prevPly = new Button("Previous Ply"),
-            prevMove = new Button("Previous Move"),
             start = new Button("Start"),
             reset = new Button("Reset to Starting Position"),
             exit = new Button("Exit");
@@ -104,12 +102,8 @@ public class Explorer extends Application {
         openPGN.setPrefHeight(BUTTON_HEIGHT);
         nextPly.setMaxWidth(Double.MAX_VALUE);
         nextPly.setPrefHeight(BUTTON_HEIGHT);
-        nextMove.setMaxWidth(Double.MAX_VALUE);
-        nextMove.setPrefHeight(BUTTON_HEIGHT);
         prevPly.setMaxWidth(Double.MAX_VALUE);
         prevPly.setPrefHeight(BUTTON_HEIGHT);
-        prevMove.setMaxWidth(Double.MAX_VALUE);
-        prevMove.setPrefHeight(BUTTON_HEIGHT);
         start.setMaxWidth(Double.MAX_VALUE);
         start.setPrefHeight(BUTTON_HEIGHT);
         end.setMaxWidth(Double.MAX_VALUE);
@@ -135,7 +129,6 @@ public class Explorer extends Application {
                     startingPosition();
 
                     nextPly.setDisable(false);
-                    nextMove.setDisable(false);
                     end.setDisable(false);
                     reset.setDisable(false);
                 }
@@ -146,16 +139,13 @@ public class Explorer extends Application {
         nextPly.setOnAction(e -> {
             b.doMove(moves.get(plyIndex++));
             prevPly.setDisable(false);
-            prevMove.setDisable(false);
             start.setDisable(false);
             if(plyIndex == moves.size()) {
                 nextPly.setDisable(true);
-                nextMove.setDisable(true);
                 end.setDisable(true);
             }
             else {
                 nextPly.setDisable(false);
-                nextMove.setDisable(false);
                 end.setDisable(false);
             }
             String fen = b.getFen(false);
@@ -164,19 +154,16 @@ public class Explorer extends Application {
 
         prevPly.setOnAction(e -> {
             nextPly.setDisable(false);
-            nextMove.setDisable(false);
             end.setDisable(false);
             plyIndex--;
             if(plyIndex <= 0) {
                 plyIndex = 0;
                 startingPosition();
                 prevPly.setDisable(true);
-                prevMove.setDisable(true);
                 start.setDisable(true);
                 return;
             } else {
                 prevPly.setDisable(false);
-                prevMove.setDisable(false);
                 start.setDisable(false);
             }
             b.undoMove();
@@ -189,8 +176,6 @@ public class Explorer extends Application {
         control.add(openPGN, 0, 0, 2, 1);
         control.add(prevPly, 0, 1);
         control.add(nextPly, 1, 1);
-        control.add(prevMove, 0, 2);
-        control.add(nextMove, 1, 2);
         control.add(start, 0, 3);
         control.add(end, 1, 3);
         control.add(reset, 0, 4, 2, 1);
@@ -210,8 +195,6 @@ public class Explorer extends Application {
         b = null;
         prevPly.setDisable(true);
         nextPly.setDisable(true);
-        prevMove.setDisable(true);
-        nextMove.setDisable(true);
         start.setDisable(true);
         end.setDisable(true);
         reset.setDisable(true);

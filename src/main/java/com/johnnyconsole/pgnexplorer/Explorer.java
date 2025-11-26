@@ -1,6 +1,5 @@
 package com.johnnyconsole.pgnexplorer;
 
-import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 import javafx.application.Application;
@@ -33,6 +32,15 @@ public class Explorer extends Application {
                         SQUARE_DARK = Color.GREEN;
     public static final double SQUARE_SIZE = 100,
                                 BUTTON_HEIGHT = 50;
+    private static final Button openPGN = new Button("Import PGN"),
+            nextPly = new Button("Next Ply"),
+            nextMove = new Button("Next Move"),
+            end = new Button("End"),
+            prevPly = new Button("Previous Ply"),
+            prevMove = new Button("Previous Move"),
+            start = new Button("Start"),
+            reset = new Button("Reset to Starting Position"),
+            exit = new Button("Exit");
     private static Game game;
     @Override
     public void start(Stage ps) {
@@ -87,16 +95,6 @@ public class Explorer extends Application {
         root.add(board, 0, 0);
 
         //Create Control Panel
-        Button openPGN = new Button("Import PGN"),
-                nextPly = new Button("Next Ply"),
-                nextMove = new Button("Next Move"),
-                end = new Button("End"),
-                prevPly = new Button("Previous Ply"),
-                prevMove = new Button("Previous Move"),
-                start = new Button("Start"),
-                reset = new Button("Reset to Starting Position"),
-                exit = new Button("Exit");
-
         openPGN.setMaxWidth(Double.MAX_VALUE);
         openPGN.setPrefHeight(BUTTON_HEIGHT);
         nextPly.setMaxWidth(Double.MAX_VALUE);
@@ -116,14 +114,6 @@ public class Explorer extends Application {
         exit.setMaxWidth(Double.MAX_VALUE);
         exit.setPrefHeight(BUTTON_HEIGHT);
 
-        prevPly.setDisable(true);
-        nextPly.setDisable(true);
-        prevMove.setDisable(true);
-        nextMove.setDisable(true);
-        start.setDisable(true);
-        end.setDisable(true);
-        reset.setDisable(true);
-
         openPGN.setOnAction(e -> {
             try {
            FileChooser fileChooser = new FileChooser();
@@ -133,9 +123,9 @@ public class Explorer extends Application {
            );
            File file = fileChooser.showOpenDialog(ps);
            if(file.exists()) {
-               PgnHolder holder = new PgnHolder(file.getAbsolutePath());
-               holder.loadPgn();
-               game = holder.getGames().get(0);
+                   PgnHolder holder = new PgnHolder(file.getAbsolutePath());
+                   holder.loadPgn();
+                   game = holder.getGames().get(0);
 
                prevPly.setDisable(false);
                nextPly.setDisable(false);
@@ -171,6 +161,14 @@ public class Explorer extends Application {
     }
 
     private void resetBoard() {
+        game = null;
+        prevPly.setDisable(true);
+        nextPly.setDisable(true);
+        prevMove.setDisable(true);
+        nextMove.setDisable(true);
+        start.setDisable(true);
+        end.setDisable(true);
+        reset.setDisable(true);
         for (StackPane[] rank : squares) {
             for (int j = 0; j < squares.length; j++) {
                 rank[j].getChildren().clear();

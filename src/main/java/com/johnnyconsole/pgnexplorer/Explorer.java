@@ -1,5 +1,8 @@
 package com.johnnyconsole.pgnexplorer;
 
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.game.Game;
+import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -14,7 +17,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 import static javafx.scene.text.FontWeight.BOLD;
 import static javafx.scene.text.FontPosture.REGULAR;
@@ -27,7 +33,7 @@ public class Explorer extends Application {
                         SQUARE_DARK = Color.GREEN;
     public static final double SQUARE_SIZE = 100,
                                 BUTTON_HEIGHT = 50;
-
+    private static Game game;
     @Override
     public void start(Stage ps) {
         GridPane root = new GridPane(),
@@ -118,6 +124,31 @@ public class Explorer extends Application {
         end.setDisable(true);
         reset.setDisable(true);
 
+        openPGN.setOnAction(e -> {
+            try {
+           FileChooser fileChooser = new FileChooser();
+           fileChooser.setTitle("Select a PGN File");
+           fileChooser.getExtensionFilters().addAll(
+                   new FileChooser.ExtensionFilter("PGN Files (*.pgn)", "*.pgn")
+           );
+           File file = fileChooser.showOpenDialog(ps);
+           if(file.exists()) {
+               PgnHolder holder = new PgnHolder(file.getAbsolutePath());
+               holder.loadPgn();
+               game = holder.getGames().get(0);
+
+               prevPly.setDisable(false);
+               nextPly.setDisable(false);
+               prevMove.setDisable(false);
+               nextMove.setDisable(false);
+               start.setDisable(false);
+               end.setDisable(false);
+               reset.setDisable(false);
+           }
+            } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        });
         reset.setOnAction(e -> resetBoard());
         exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
 

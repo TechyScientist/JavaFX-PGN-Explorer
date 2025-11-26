@@ -80,6 +80,49 @@ public class Explorer extends Application {
         resetBoard();
         root.add(board, 0, 0);
 
+        //Create Control Panel
+        Button openPGN = new Button("Import PGN"),
+                nextPly = new Button("Next Ply"),
+                nextMove = new Button("Next Move"),
+                end = new Button("End"),
+                prevPly = new Button("Previous Ply"),
+                prevMove = new Button("Previous Move"),
+                start = new Button("Start"),
+                reset = new Button("Reset to Starting Position"),
+                exit = new Button("Exit");
+
+        openPGN.setMaxWidth(Double.MAX_VALUE);
+        openPGN.setPrefHeight(BUTTON_HEIGHT);
+        nextPly.setMaxWidth(Double.MAX_VALUE);
+        nextPly.setPrefHeight(BUTTON_HEIGHT);
+        nextMove.setMaxWidth(Double.MAX_VALUE);
+        nextMove.setPrefHeight(BUTTON_HEIGHT);
+        prevPly.setMaxWidth(Double.MAX_VALUE);
+        prevPly.setPrefHeight(BUTTON_HEIGHT);
+        prevMove.setMaxWidth(Double.MAX_VALUE);
+        prevMove.setPrefHeight(BUTTON_HEIGHT);
+        start.setMaxWidth(Double.MAX_VALUE);
+        start.setPrefHeight(BUTTON_HEIGHT);
+        end.setMaxWidth(Double.MAX_VALUE);
+        end.setPrefHeight(BUTTON_HEIGHT);
+        reset.setMaxWidth(Double.MAX_VALUE);
+        reset.setPrefHeight(BUTTON_HEIGHT);
+        exit.setMaxWidth(Double.MAX_VALUE);
+        exit.setPrefHeight(BUTTON_HEIGHT);
+
+        control.add(openPGN, 0, 0, 2, 1);
+        control.add(prevPly, 0, 1);
+        control.add(nextPly, 1, 1);
+        control.add(prevMove, 0, 2);
+        control.add(nextMove, 1, 2);
+        control.add(start, 0, 3);
+        control.add(end, 1, 3);
+        control.add(reset, 0, 4, 2, 1);
+        control.add(exit, 0, 5, 2, 1);
+
+        GridPane.setValignment(control, VPos.CENTER);
+        root.add(control, 1, 0);
+
         ps.setTitle("PGN Explorer");
         ps.setScene(new Scene(root));
         ps.show();

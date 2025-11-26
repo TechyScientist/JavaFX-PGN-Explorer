@@ -110,6 +110,8 @@ public class Explorer extends Application {
         exit.setMaxWidth(Double.MAX_VALUE);
         exit.setPrefHeight(BUTTON_HEIGHT);
 
+        reset.setOnAction(e -> resetBoard());
+
         control.add(openPGN, 0, 0, 2, 1);
         control.add(prevPly, 0, 1);
         control.add(nextPly, 1, 1);

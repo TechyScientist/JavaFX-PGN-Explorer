@@ -1,6 +1,7 @@
 package com.johnnyconsole.pgnexplorer;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 import javafx.application.Application;
@@ -137,7 +138,8 @@ public class Explorer extends Application {
             }
         });
         nextPly.setOnAction(e -> {
-            b.doMove(moves.get(plyIndex++));
+            Move move = moves.get(plyIndex++);
+            b.doMove(move);
             prevPly.setDisable(false);
             start.setDisable(false);
             if(plyIndex == moves.size()) {
@@ -149,7 +151,7 @@ public class Explorer extends Application {
                 end.setDisable(false);
             }
             String fen = b.getFen(false);
-            updateBoard(fen.substring(0, fen.indexOf(' ')));
+            updateBoard(move, fen.substring(0, fen.indexOf(' ')));
         });
 
         prevPly.setOnAction(e -> {
@@ -166,9 +168,9 @@ public class Explorer extends Application {
                 prevPly.setDisable(false);
                 start.setDisable(false);
             }
-            b.undoMove();
+            Move move = b.undoMove();
             String fen = b.getFen(false);
-            updateBoard(fen.substring(0, fen.indexOf(' ')));
+            updateBoard(move, fen.substring(0, fen.indexOf(' ')));
         });
         reset.setOnAction(e -> resetBoard());
         exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
@@ -242,13 +244,15 @@ public class Explorer extends Application {
         }
     }
 
-    private void updateBoard(String fen) {
-        moveCounter.setText(String.format("Move Counter:\n\tMove %d of %d\n\tPly %d of %d\n\t" +
+    private void updateBoard(Move move, String fen) {
+        moveCounter.setText(String.format("Move Played: %s\nMove Counter:\n\tMove %d of %d\n\tPly %d of %d\n\t" +
                 (b.isMated() ? "Checkmate" : b.isStaleMate() ? "Draw: Stalemate" :
                     b.isInsufficientMaterial() ? "Draw: Insufficient Material" :
                     b.isRepetition() ? "Draw: Threefold Repetition" :
                     b.isDraw() ? "Draw" : b.isKingAttacked() ? "Check: %s to move" : "%s to move"),
-                (plyIndex / 2) + 1, (moves.size() / 2) + 1,
+                ((plyIndex / 2) + 1) +  (plyIndex % 2 == 0 ? "... " : ". ") + move.getSan(),
+                plyIndex % 2 == 0 ? plyIndex / 2 : (plyIndex / 2) + 1,
+                moves.size() % 2 == 0 ? moves.size() / 2 : (moves.size() / 2) + 1,
                 plyIndex, moves.size(),
                 plyIndex % 2 == 0 ? "White" : "Black"
         ));

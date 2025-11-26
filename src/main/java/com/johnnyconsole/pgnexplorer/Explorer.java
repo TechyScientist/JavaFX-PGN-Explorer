@@ -7,15 +7,14 @@ import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -42,6 +41,7 @@ public class Explorer extends Application {
             reset = new Button("Reset to Starting Position"),
             exit = new Button("Exit");
     public static final Label moveCounter = new Label();
+    public static final TextField positionFen = new TextField();
     private static MoveList moves;
     private static Board b;
     private static int plyIndex = 0;
@@ -51,12 +51,16 @@ public class Explorer extends Application {
         GridPane root = new GridPane(),
                 board = new GridPane(),
                 control = new GridPane();
-        root.setPadding(new Insets(20, 20, 0, 0));
+        root.setPadding(new Insets(20));
         control.setPadding(new Insets(20));
         root.setHgap(10);
         control.setHgap(10);
         root.setVgap(10);
         control.setVgap(10);
+
+        positionFen.setEditable(false);
+        positionFen.setPrefWidth(600);
+        positionFen.setFont(Font.font(16));
 
         //Create the square nodes
         for(int i = 1; i <= 8; i++) {
@@ -94,6 +98,15 @@ public class Explorer extends Application {
             board.add(rank, 0, i);
             board.add(file, i, 9);
         }
+
+        HBox fenBox = new HBox(new Label("Position FEN:"), positionFen);
+        fenBox.setSpacing(10);
+        fenBox.setMaxWidth(Double.MAX_VALUE);
+        fenBox.setAlignment(Pos.CENTER);
+        ((Label)(fenBox.getChildren().get(0))).setFont(Font.font(16));
+        GridPane.setHalignment(fenBox, HPos.CENTER);
+        board.add(fenBox, 1, 11, 8, 1);
+
 
         resetBoard();
         root.add(board, 0, 0);
@@ -172,6 +185,7 @@ public class Explorer extends Application {
             String fen = b.getFen(false);
             updateBoard(move, fen.substring(0, fen.indexOf(' ')));
         });
+
         reset.setOnAction(e -> resetBoard());
         exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
 
@@ -210,6 +224,7 @@ public class Explorer extends Application {
         clearBoard();
         b = new Board();
         moveCounter.setText("Starting Position");
+        positionFen.setText("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         //Add pieces
         for (int i = 1; i <= 8; i++) {
             squares[6][i - 1].getChildren().add(new ImageView(WP));
@@ -311,7 +326,7 @@ public class Explorer extends Application {
             }
         }
         //TODO: Add sounds depending on the move played
-        //TODO: Add FEN string to the layout
+        positionFen.setText(fen);
         System.out.println(fen);    //Temporary! TODO: Remove when FEN is processed on display board
     }
     @SuppressWarnings("unused")

@@ -187,6 +187,8 @@ public class Explorer extends Application {
         GridPane.setValignment(control, VPos.CENTER);
         root.add(control, 1, 0);
 
+        //TODO: Add PGN move list to layout
+
         ps.setTitle("PGN Explorer");
         ps.setScene(new Scene(root));
         ps.show();
@@ -308,6 +310,8 @@ public class Explorer extends Application {
                 }
             }
         }
+        //TODO: Add sounds depending on the move played
+        //TODO: Add FEN string to the layout
         System.out.println(fen);    //Temporary! TODO: Remove when FEN is processed on display board
     }
     @SuppressWarnings("unused")

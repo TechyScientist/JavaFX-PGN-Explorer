@@ -111,6 +111,7 @@ public class Explorer extends Application {
         exit.setPrefHeight(BUTTON_HEIGHT);
 
         reset.setOnAction(e -> resetBoard());
+        exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
 
         control.add(openPGN, 0, 0, 2, 1);
         control.add(prevPly, 0, 1);
@@ -131,9 +132,9 @@ public class Explorer extends Application {
     }
 
     private void resetBoard() {
-        for (int i = 0; i < squares.length; i++) {
+        for (StackPane[] rank : squares) {
             for (int j = 0; j < squares.length; j++) {
-                squares[i][j].getChildren().clear();
+                rank[j].getChildren().clear();
             }
         }
 

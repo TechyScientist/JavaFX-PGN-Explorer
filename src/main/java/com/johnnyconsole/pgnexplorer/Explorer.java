@@ -130,15 +130,12 @@ public class Explorer extends Application {
                 if (file.exists()) {
                     PgnHolder holder = new PgnHolder(file.getAbsolutePath());
                     holder.loadPgn();
-                    b = new Board();
                     moves = holder.getGames().get(0).getHalfMoves();
+                    plyIndex = 0;
                     startingPosition();
 
-                    prevPly.setDisable(false);
                     nextPly.setDisable(false);
-                    prevMove.setDisable(false);
                     nextMove.setDisable(false);
-                    start.setDisable(false);
                     end.setDisable(false);
                     reset.setDisable(false);
                 }
@@ -148,6 +145,9 @@ public class Explorer extends Application {
         });
         nextPly.setOnAction(e -> {
             b.doMove(moves.get(plyIndex++));
+            prevPly.setDisable(false);
+            prevMove.setDisable(false);
+            start.setDisable(false);
             if(plyIndex == moves.size()) {
                 nextPly.setDisable(true);
                 nextMove.setDisable(true);
@@ -158,6 +158,28 @@ public class Explorer extends Application {
                 nextMove.setDisable(false);
                 end.setDisable(false);
             }
+            String fen = b.getFen(false);
+            updateBoard(fen.substring(0, fen.indexOf(' ')));
+        });
+
+        prevPly.setOnAction(e -> {
+            nextPly.setDisable(false);
+            nextMove.setDisable(false);
+            end.setDisable(false);
+            plyIndex--;
+            if(plyIndex <= 0) {
+                plyIndex = 0;
+                startingPosition();
+                prevPly.setDisable(true);
+                prevMove.setDisable(true);
+                start.setDisable(true);
+                return;
+            } else {
+                prevPly.setDisable(false);
+                prevMove.setDisable(false);
+                start.setDisable(false);
+            }
+            b.undoMove();
             String fen = b.getFen(false);
             updateBoard(fen.substring(0, fen.indexOf(' ')));
         });
@@ -199,6 +221,7 @@ public class Explorer extends Application {
 
     private void startingPosition() {
         clearBoard();
+        b = new Board();
         moveCounter.setText("Starting Position");
         //Add pieces
         for (int i = 1; i <= 8; i++) {
@@ -246,7 +269,7 @@ public class Explorer extends Application {
                 plyIndex, moves.size(),
                 plyIndex % 2 == 0 ? "White" : "Black"
         ));
-        System.out.println(fen);
+        System.out.println(fen);    //Temporary! TODO: Remove when FEN is processed on display board
     }
     @SuppressWarnings("unused")
     public static void main(String[] args) {

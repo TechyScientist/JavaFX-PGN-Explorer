@@ -252,6 +252,58 @@ public class Explorer extends Application {
                 plyIndex, moves.size(),
                 plyIndex % 2 == 0 ? "White" : "Black"
         ));
+        String[] ranks = fen.split("/");
+        clearBoard();
+        for(int i = 0; i < squares.length; i++) {
+            int j = 0, c = 0;
+            while(j < squares.length) {
+                char sq =  ranks[i].charAt(c++);
+                if(Character.isDigit(sq)) {
+                    j += (sq - '0');
+                }
+                else {
+                    switch(sq) {
+                        case 'p':
+                            squares[i][j].getChildren().add(new ImageView(BP));
+                            break;
+                        case 'P':
+                            squares[i][j].getChildren().add(new ImageView(WP));
+                            break;
+                        case 'n':
+                            squares[i][j].getChildren().add(new ImageView(BN));
+                            break;
+                        case 'N':
+                            squares[i][j].getChildren().add(new ImageView(WN));
+                            break;
+                        case 'b':
+                            squares[i][j].getChildren().add(new ImageView(BB));
+                            break;
+                        case 'B':
+                            squares[i][j].getChildren().add(new ImageView(WB));
+                            break;
+                        case 'r':
+                            squares[i][j].getChildren().add(new ImageView(BR));
+                            break;
+                        case 'R':
+                            squares[i][j].getChildren().add(new ImageView(WR));
+                            break;
+                        case 'k':
+                            squares[i][j].getChildren().add(new ImageView(BK));
+                            break;
+                        case 'K':
+                            squares[i][j].getChildren().add(new ImageView(WK));
+                            break;
+                        case 'q':
+                            squares[i][j].getChildren().add(new ImageView(BQ));
+                            break;
+                        case 'Q':
+                            squares[i][j].getChildren().add(new ImageView(WQ));
+                            break;
+                    }
+                    j++;
+                }
+            }
+        }
         System.out.println(fen);    //Temporary! TODO: Remove when FEN is processed on display board
     }
     @SuppressWarnings("unused")

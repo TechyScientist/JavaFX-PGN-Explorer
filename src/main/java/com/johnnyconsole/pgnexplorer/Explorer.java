@@ -1,6 +1,7 @@
 package com.johnnyconsole.pgnexplorer;
 
-import com.github.bhlangonijr.chesslib.game.Game;
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 import javafx.application.Application;
 import javafx.geometry.HPos;
@@ -41,7 +42,11 @@ public class Explorer extends Application {
             start = new Button("Start"),
             reset = new Button("Reset to Starting Position"),
             exit = new Button("Exit");
-    private static Game game;
+    public static final Label moveCounter = new Label();
+    private static MoveList moves;
+    private static Board b;
+    private static int plyIndex = 0;
+
     @Override
     public void start(Stage ps) {
         GridPane root = new GridPane(),
@@ -116,28 +121,45 @@ public class Explorer extends Application {
 
         openPGN.setOnAction(e -> {
             try {
-           FileChooser fileChooser = new FileChooser();
-           fileChooser.setTitle("Select a PGN File");
-           fileChooser.getExtensionFilters().addAll(
-                   new FileChooser.ExtensionFilter("PGN Files (*.pgn)", "*.pgn")
-           );
-           File file = fileChooser.showOpenDialog(ps);
-           if(file.exists()) {
-                   PgnHolder holder = new PgnHolder(file.getAbsolutePath());
-                   holder.loadPgn();
-                   game = holder.getGames().get(0);
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Select a PGN File");
+                fileChooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("PGN Files (*.pgn)", "*.pgn")
+                );
+                File file = fileChooser.showOpenDialog(ps);
+                if (file.exists()) {
+                    PgnHolder holder = new PgnHolder(file.getAbsolutePath());
+                    holder.loadPgn();
+                    b = new Board();
+                    moves = holder.getGames().get(0).getHalfMoves();
+                    startingPosition();
 
-               prevPly.setDisable(false);
-               nextPly.setDisable(false);
-               prevMove.setDisable(false);
-               nextMove.setDisable(false);
-               start.setDisable(false);
-               end.setDisable(false);
-               reset.setDisable(false);
-           }
+                    prevPly.setDisable(false);
+                    nextPly.setDisable(false);
+                    prevMove.setDisable(false);
+                    nextMove.setDisable(false);
+                    start.setDisable(false);
+                    end.setDisable(false);
+                    reset.setDisable(false);
+                }
             } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+                throw new RuntimeException(ex);
+            }
+        });
+        nextPly.setOnAction(e -> {
+            b.doMove(moves.get(plyIndex++));
+            if(plyIndex == moves.size()) {
+                nextPly.setDisable(true);
+                nextMove.setDisable(true);
+                end.setDisable(true);
+            }
+            else {
+                nextPly.setDisable(false);
+                nextMove.setDisable(false);
+                end.setDisable(false);
+            }
+            String fen = b.getFen(false);
+            updateBoard(fen.substring(0, fen.indexOf(' ')));
         });
         reset.setOnAction(e -> resetBoard());
         exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
@@ -151,6 +173,7 @@ public class Explorer extends Application {
         control.add(end, 1, 3);
         control.add(reset, 0, 4, 2, 1);
         control.add(exit, 0, 5, 2, 1);
+        control.add(moveCounter, 0, 7, 2, 1);
 
         GridPane.setValignment(control, VPos.CENTER);
         root.add(control, 1, 0);
@@ -161,7 +184,8 @@ public class Explorer extends Application {
     }
 
     private void resetBoard() {
-        game = null;
+        moves = null;
+        b = null;
         prevPly.setDisable(true);
         nextPly.setDisable(true);
         prevMove.setDisable(true);
@@ -169,12 +193,13 @@ public class Explorer extends Application {
         start.setDisable(true);
         end.setDisable(true);
         reset.setDisable(true);
-        for (StackPane[] rank : squares) {
-            for (int j = 0; j < squares.length; j++) {
-                rank[j].getChildren().clear();
-            }
-        }
 
+        startingPosition();
+    }
+
+    private void startingPosition() {
+        clearBoard();
+        moveCounter.setText("Starting Position");
         //Add pieces
         for (int i = 1; i <= 8; i++) {
             squares[6][i - 1].getChildren().add(new ImageView(WP));
@@ -201,6 +226,27 @@ public class Explorer extends Application {
 
         squares[0][4].getChildren().add(new ImageView(BK));
         squares[7][4].getChildren().add(new ImageView(WK));
+    }
+
+    private void clearBoard() {
+        for (StackPane[] rank : squares) {
+            for (int j = 0; j < squares.length; j++) {
+                rank[j].getChildren().clear();
+            }
+        }
+    }
+
+    private void updateBoard(String fen) {
+        moveCounter.setText(String.format("Move Counter:\n\tMove %d of %d\n\tPly %d of %d\n\t" +
+                (b.isMated() ? "Checkmate" : b.isStaleMate() ? "Draw: Stalemate" :
+                    b.isInsufficientMaterial() ? "Draw: Insufficient Material" :
+                    b.isRepetition() ? "Draw: Threefold Repetition" :
+                    b.isDraw() ? "Draw" : b.isKingAttacked() ? "Check: %s to move" : "%s to move"),
+                (plyIndex / 2) + 1, (moves.size() / 2) + 1,
+                plyIndex, moves.size(),
+                plyIndex % 2 == 0 ? "White" : "Black"
+        ));
+        System.out.println(fen);
     }
     @SuppressWarnings("unused")
     public static void main(String[] args) {

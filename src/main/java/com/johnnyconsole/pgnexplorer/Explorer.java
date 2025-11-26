@@ -186,6 +186,19 @@ public class Explorer extends Application {
             updateBoard(move, fen.substring(0, fen.indexOf(' ')));
         });
 
+        start.setOnAction(e -> {
+            while(plyIndex != 0) {
+                b.undoMove();
+                plyIndex--;
+            }
+            nextPly.setDisable(false);
+            end.setDisable(false);
+            prevPly.setDisable(true);
+            start.setDisable(true);
+
+            startingPosition();
+        });
+
         reset.setOnAction(e -> resetBoard());
         exit.setOnAction(e -> new ConfirmExitDialog(ps).start(new Stage()));
 

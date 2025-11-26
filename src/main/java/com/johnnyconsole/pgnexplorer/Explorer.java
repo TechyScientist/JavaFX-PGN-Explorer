@@ -5,6 +5,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -24,14 +25,20 @@ public class Explorer extends Application {
     private static final StackPane[][] squares = new StackPane[8][8];
     private static final Color SQUARE_LIGHT = Color.WHITE,
                         SQUARE_DARK = Color.GREEN;
-    public static final double SQUARE_SIZE = 100;
+    public static final double SQUARE_SIZE = 100,
+                                BUTTON_HEIGHT = 50;
 
     @Override
     public void start(Stage ps) {
-        GridPane root = new GridPane(), board = new GridPane();
+        GridPane root = new GridPane(),
+                board = new GridPane(),
+                control = new GridPane();
         root.setPadding(new Insets(20, 20, 0, 0));
+        control.setPadding(new Insets(20));
         root.setHgap(10);
+        control.setHgap(10);
         root.setVgap(10);
+        control.setVgap(10);
 
         //Create the square nodes
         for(int i = 1; i <= 8; i++) {
@@ -70,6 +77,21 @@ public class Explorer extends Application {
             board.add(file, i, 9);
         }
 
+        resetBoard();
+        root.add(board, 0, 0);
+
+        ps.setTitle("PGN Explorer");
+        ps.setScene(new Scene(root));
+        ps.show();
+    }
+
+    private void resetBoard() {
+        for (int i = 0; i < squares.length; i++) {
+            for (int j = 0; j < squares.length; j++) {
+                squares[i][j].getChildren().clear();
+            }
+        }
+
         //Add pieces
         for (int i = 1; i <= 8; i++) {
             squares[6][i - 1].getChildren().add(new ImageView(WP));
@@ -96,14 +118,7 @@ public class Explorer extends Application {
 
         squares[0][4].getChildren().add(new ImageView(BK));
         squares[7][4].getChildren().add(new ImageView(WK));
-
-        root.add(board, 0, 0, 9, 9);
-
-        ps.setTitle("PGN Explorer");
-        ps.setScene(new Scene(root));
-        ps.show();
     }
-
     @SuppressWarnings("unused")
     public static void main(String[] args) {
         launch(args);

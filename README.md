@@ -4,9 +4,11 @@ A simple program written in JavaFX to allow you to explore a chess Portable Game
 ### Installation
 This repository uses the Maven build system for building artifacts and dependency management. Download the code and use Maven to build the ```JavaFX-PGN-Explorer.jar``` file by using the command line tool:
 
-```mvn clean package```
+```mvn clean package javafx:run```
 
-The generated ```JavaFX-PGN-Explorer.jar``` file will be placed in Maven's ```target``` directory by default.
+The generated ```JavaFX-PGN-Explorer.jar``` file will be placed in Maven's ```target``` directory by default. You'll need JDK/JRE 25 (or higher) and OpenJFX 25 (or higher) installed, and you'll need to run the jar with the command line as follows:
+
+```java -jar path/to/jar --module-path path/to/openjfx --add-modules javafx.controls,javafx.media```
 
 ### Using the PGN Explorer
 Opening the JAR file with a version of Java that includes the JavaFX libraries (e.g., Amazon Corretto v1.8.0), you will be presented with the main interface:

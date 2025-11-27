@@ -36,11 +36,11 @@ public class Explorer extends Application {
     public static final double SQUARE_SIZE = 100,
                                 BUTTON_HEIGHT = 50;
     private static final Button openPGN = new Button("Import PGN"),
-            nextPly = new Button("Next Ply"),
-            end = new Button("End"),
-            prevPly = new Button("Previous Ply"),
-            start = new Button("Start"),
-            reset = new Button("Reset to Starting Position"),
+            nextPly = new Button("Next Ply >"),
+            end = new Button("End >>"),
+            prevPly = new Button("< Previous Ply"),
+            start = new Button("<< Start"),
+            reset = new Button("Clear PGN, Reset to Starting Position"),
             exit = new Button("Exit");
     public static final Label moveCounter = new Label();
     public static final TextField positionFen = new TextField();
@@ -239,16 +239,15 @@ public class Explorer extends Application {
     private void resetBoard() {
         moves = null;
         b = null;
+        startingPosition();
+    }
+
+    private void startingPosition() {
         prevPly.setDisable(true);
         nextPly.setDisable(true);
         start.setDisable(true);
         end.setDisable(true);
         reset.setDisable(true);
-
-        startingPosition();
-    }
-
-    private void startingPosition() {
         clearBoard();
         b = new Board();
         moveCounter.setText("Starting Position");

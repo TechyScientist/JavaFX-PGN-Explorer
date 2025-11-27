@@ -1,6 +1,7 @@
 package com.johnnyconsole.pgnexplorer;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
@@ -25,6 +26,7 @@ import java.io.File;
 import static javafx.scene.text.FontWeight.BOLD;
 import static javafx.scene.text.FontPosture.REGULAR;
 import static com.johnnyconsole.pgnexplorer.PieceImage.*;
+import static com.johnnyconsole.pgnexplorer.GameSound.*;
 
 public class Explorer extends Application {
 
@@ -46,6 +48,7 @@ public class Explorer extends Application {
     private static Board b;
     private static int plyIndex = 0;
 
+    @SuppressWarnings("unused")
     @Override
     public void start(Stage ps) {
         GridPane root = new GridPane(),
@@ -103,7 +106,7 @@ public class Explorer extends Application {
         fenBox.setSpacing(10);
         fenBox.setMaxWidth(Double.MAX_VALUE);
         fenBox.setAlignment(Pos.CENTER);
-        ((Label)(fenBox.getChildren().get(0))).setFont(Font.font(16));
+        ((Label)(fenBox.getChildren().getFirst())).setFont(Font.font(16));
         GridPane.setHalignment(fenBox, HPos.CENTER);
         board.add(fenBox, 1, 11, 8, 1);
 
@@ -138,7 +141,7 @@ public class Explorer extends Application {
                 if (file.exists()) {
                     PgnHolder holder = new PgnHolder(file.getAbsolutePath());
                     holder.loadPgn();
-                    moves = holder.getGames().get(0).getHalfMoves();
+                    moves = holder.getGames().getFirst().getHalfMoves();
                     plyIndex = 0;
                     startingPosition();
 
@@ -208,7 +211,7 @@ public class Explorer extends Application {
             prevPly.setDisable(false);
             start.setDisable(false);
             String fen = b.getFen(false);
-            updateBoard(moves.get(moves.size() - 1), fen.substring(0, fen.indexOf(' ')));
+            updateBoard(moves.getLast(), fen.substring(0, fen.indexOf(' ')));
         });
 
         reset.setOnAction(e -> resetBoard());
@@ -350,11 +353,25 @@ public class Explorer extends Application {
                 }
             }
         }
-        //TODO: Add sounds depending on the move played
+        playMoveSound(move);
         positionFen.setText(fen);
     }
+
+    private void playMoveSound(Move move) {
+        if(move.getPromotion() != Piece.NONE) SOUND_PROMOTE.play();
+        if(b.isKingAttacked()) SOUND_CHECK.play();
+        if(b.isMated() || b.isStaleMate() ||
+                b.isInsufficientMaterial() || b.isRepetition() ||
+                b.isDraw()) {
+            SOUND_GAME_END.play();
+            return;
+        }
+        if(move.getSan().contains("O")) SOUND_CASTLE.play();
+        if(move.getSan().contains("x")) SOUND_CAPTURE.play();
+        else SOUND_MOVE.play();
+    }
     @SuppressWarnings("unused")
-    public static void main(String[] args) {
+    static void main(String[] args) {
         launch(args);
     }
 
